@@ -14,9 +14,12 @@ namespace Tetris
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
         Random rnd = new Random();
-
+        List<int[,]> rotate = new List<int[,]>();
+        
         private Texture2D block;
         private SpriteFont font;
+        private KeyboardState oldKeyState;
+        private KeyboardState currentKeyState; 
 
         const int pixelWidth = 32;
         const int pixelLength = 31;
@@ -24,7 +27,8 @@ namespace Tetris
         int[,] shape = new int[4, 4];
         int posX = 200;
         int posY = 200;
-        float angle = 0.0f;
+        int rotateIndex = 0;
+        int rnum = 0;
 
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
@@ -90,18 +94,43 @@ namespace Tetris
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
         protected override void Update(GameTime gameTime)
         {
+            oldKeyState = currentKeyState;
+            currentKeyState = Keyboard.GetState(); 
+            
             
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
 
             // TODO: Add your update logic here
+            if (rnum == 0)
+                rotate = shapeObj.GetRotate_T();
+            if (rnum == 1)
+                rotate = shapeObj.GetRotate_Z();
+            if (rnum == 2)
+                rotate = shapeObj.GetRotate_S();
+            if (rnum == 3)
+                rotate = shapeObj.GetRotate_L();
+            if (rnum == 4)
+                rotate = shapeObj.GetRotate_J();
+            if (rnum == 5)
+                rotate = shapeObj.GetRotate_Sq();
+            if (rnum == 6)
+                rotate = shapeObj.GetRotate_Line();
 
-            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             {
-                angle = (float)Math.PI / 2.0f; 
+                if(rotateIndex < 4)
+                {
+                    Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+                }
+                else
+                {
+                    rotateIndex = 0; 
+                }
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
             {
@@ -115,6 +144,12 @@ namespace Tetris
             {
                 posY += 10; 
             }
+            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
+            {
+                 rnum = rnd.Next(0, 6); 
+
+            }
+
             base.Update(gameTime);
         }
 
@@ -132,8 +167,7 @@ namespace Tetris
             // TODO: Add your drawing code here
             spriteBatch.Begin();
 
-            //int rnum = rnd.Next(0, 6); 
-            int rnum = 0;
+           // int rnum = 0;
             shape = shapeList[rnum];
 
             for (int i = 0; i<4; i++)
