@@ -18,35 +18,12 @@ namespace Tetris
         private Texture2D block;
         const int pixelWidth = 32;
         const int pixelLength = 31; 
-        int[,] shape = new int[4, 4] { { 0, 1, 0, 0 },
-                                       { 1, 1, 1, 0 },
+        int[,] shape = new int[4, 4] { { 0, 0, 0, 0 },
+                                       { 0, 0, 0, 0 },
                                        { 0, 0, 0, 0},
                                        { 0, 0, 0, 0 } };
         
-        int[,] Zshape = new int[4, 4] { { 1, 1, 0, 0 },
-                                        { 0, 1, 1, 0 },
-                                        { 0, 0, 0, 0},
-                                        { 0, 0, 0, 0 } };
 
-        int[,] Square = new int[4, 4] {{ 0, 0, 0, 0 },
-                                       { 0, 1, 1, 0 },
-                                       { 0, 1, 1, 0},
-                                       { 0, 0, 0, 0 } };
-
-        int[,] Line = new int[4, 4] {  { 0, 1, 0, 0 },
-                                       { 0, 1, 0, 0 },
-                                       { 0, 1, 0, 0},
-                                       { 0, 1, 0, 0 } };
-
-        int[,] Jshape = new int[4, 4] {{ 0, 0, 0, 0 },
-                                       { 1, 0, 0, 0 },
-                                       { 1, 1, 1, 0},
-                                       { 0, 0, 0, 0 } };
-
-        int[,] Lshape = new int[4, 4] {{ 0, 0, 0, 0 },
-                                       { 0, 1, 0, 0 },
-                                       { 0, 1, 0, 0},
-                                       { 0, 1, 1, 0 } };
         public TetrisGame()
         {
             graphics = new GraphicsDeviceManager(this);
