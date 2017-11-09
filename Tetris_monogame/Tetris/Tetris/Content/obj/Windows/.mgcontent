@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>Y:/Documents/GitHub/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/TetrisBlock.png</File>
+    <File>Y:/Documents/GitHub/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/block.png</File>
+  </SourceFiles>
+</SourceFileCollection>
