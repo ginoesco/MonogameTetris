@@ -50,3 +50,29 @@ Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\T
 Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.csproj.CoreCompileInputs.cache
 Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.exe
 Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.pdb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\block.xnb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\TetrisBlock.xnb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Tetris.exe
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Tetris.pdb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\MonoGame.Framework.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.MediaFoundation.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.XAudio2.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.DXGI.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct3D11.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct2D1.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.XInput.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct3D9.dll
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\MonoGame.Framework.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.MediaFoundation.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.XAudio2.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.DXGI.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct3D11.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.XInput.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\SharpDX.Direct3D9.xml
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.csprojResolveAssemblyReference.cache
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.csproj.CoreCompileInputs.cache
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.exe
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.pdb

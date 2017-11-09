@@ -13,22 +13,39 @@ namespace Tetris
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
-        Random rnd = new Random(); 
+        Random rnd = new Random();
 
         private Texture2D block;
+        private SpriteFont font;
+
         const int pixelWidth = 32;
         const int pixelLength = 31;
+        const int size = 32;
         int[,] shape = new int[4, 4];
         int posX = 200;
         int posY = 200;
-        float angle = 0.0f; 
+        float angle = 0.0f;
 
+        int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
         public TetrisGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
+
+            graphics.PreferredBackBufferWidth = 1000; //Make the game board a size 1k by 1k
+            graphics.PreferredBackBufferHeight = 1000;
+        }
+
+        public void NewGame()
+        {
+            for (int i =0; i <10; i ++)
+            {
+                for (int j = 0; j < 18; j++)
+                {
+                    gameBoard[i, j] = 0; // Initialize each location to a zero
+                }
+            }
         }
 
         /// <summary>
@@ -54,7 +71,8 @@ namespace Tetris
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            block = Content.Load<Texture2D>("block"); 
+            block = Content.Load<Texture2D>("block");
+            font = Content.Load<SpriteFont>("Score");
         }
 
         /// <summary>
@@ -108,7 +126,8 @@ namespace Tetris
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             List<int[,]> shapeList = shapeObj.GetShapeList();
-            List<Color> Colors = shapeObj.GetColorList(); 
+            List<Color> Colors = shapeObj.GetColorList();
+            Color boardColor = new Color();
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
@@ -127,7 +146,27 @@ namespace Tetris
                     }
                 }
             }
-            spriteBatch.End(); 
+            spriteBatch.End();
+
+            //Creating the board state
+            spriteBatch.Begin();
+            for (int i =0; i <10; i ++)
+            {
+                for (int j = 0; j < 18; j++)
+                { 
+                    if (gameBoard[i,j] == 0)
+                    {
+                       boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
+                       spriteBatch.Draw(block, new Rectangle(i *size, j*size, size, size), new Rectangle (0,0,32,32), boardColor);
+                    }
+                }
+            }
+            spriteBatch.End();
+
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "Score: ", new Vector2(400, 200), Color.Black);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
