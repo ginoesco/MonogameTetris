@@ -14,6 +14,7 @@ namespace Tetris
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
         Random rnd = new Random();
+        GameBoard gbObj = new GameBoard(); 
         List<int[,]> rotate = new List<int[,]>();
         
         private Texture2D block;
@@ -23,16 +24,20 @@ namespace Tetris
 
         const int pixelWidth = 32;
         const int pixelLength = 31;
+        const int boardX = 330;
+        const int boardY = 200;
         const int size = 32;
         int[,] shape = new int[4, 4];
-        int posX = 200;
+        int[,] gameBoard = new int[10, 18]; // 10x 18 board
+
+        int posX = 330;
         int posY = 200;
-        int boardX =330;
-        int boardY = 200; 
+    
+        int boundsX = boardX + pixelWidth * 7;
+        int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
         int rnum = 0;
 
-        int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
         public TetrisGame()
         {
@@ -136,15 +141,18 @@ namespace Tetris
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                posX -= 10; 
+                if(posX>boardX)
+                    posX -= pixelWidth; 
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                posX += 10; 
+                if(posX < boundsX)
+                    posX += pixelWidth; 
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                posY += 10; 
+                if(posY < boundsY)
+                posY += pixelWidth; 
             }
             if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
             {
@@ -164,9 +172,30 @@ namespace Tetris
             GraphicsDevice.Clear(Color.CornflowerBlue);
             List<int[,]> shapeList = shapeObj.GetShapeList();
             List<Color> Colors = shapeObj.GetColorList();
+            List<int[,]> GameBoardList = gbObj.GetGameBoard(); 
             Color boardColor = new Color();
 
             // TODO: Add your drawing code here
+
+
+            //Creating the board state
+
+            gameBoard = GameBoardList[0];
+
+            spriteBatch.Begin();
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 18; j++)
+                {
+                    if (gameBoard[i, j] == 0)
+                    {
+                        boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
+                        spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), boardColor);
+                    }
+                }
+            }
+            spriteBatch.End();
+
             spriteBatch.Begin();
 
            // int rnum = 0;
@@ -184,20 +213,6 @@ namespace Tetris
             }
             spriteBatch.End();
 
-            //Creating the board state
-            spriteBatch.Begin();
-            for (int i =0; i <10; i ++)
-            {
-                for (int j = 0; j < 18; j++)
-                { 
-                    if (gameBoard[i,j] == 0)
-                    {
-                       boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
-                       spriteBatch.Draw(block, new Rectangle(boardX+i *size,boardY+j*size, size, size), new Rectangle (0,0,32,32), boardColor);
-                    }
-                }
-            }
-            spriteBatch.End();
 
 
             spriteBatch.Begin();
