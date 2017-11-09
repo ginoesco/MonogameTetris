@@ -17,12 +17,12 @@ namespace Tetris
 
         private Texture2D block;
         const int pixelWidth = 32;
-        const int pixelLength = 31; 
-        int[,] shape = new int[4, 4] { { 0, 0, 0, 0 },
-                                       { 0, 0, 0, 0 },
-                                       { 0, 0, 0, 0},
-                                       { 0, 0, 0, 0 } };
-        
+        const int pixelLength = 31;
+        int[,] shape = new int[4, 4];
+        int posX = 200;
+        int posY = 200;
+        float angle = 0.0f; 
+
 
         public TetrisGame()
         {
@@ -74,11 +74,29 @@ namespace Tetris
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
             // TODO: Add your update logic here
 
+            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                angle = (float)Math.PI / 2.0f; 
+            }
+            if(Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                posX -= 10; 
+            }
+            if(Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                posX += 10; 
+            }
+            if(Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                posY += 10; 
+            }
             base.Update(gameTime);
         }
 
@@ -94,20 +112,17 @@ namespace Tetris
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            int posX = 200;
-            int posY = 200;
-            int rnum = rnd.Next(0, 6); 
-            //int rnum = 6; 
 
-            shape = shapeList[rnum]; 
+            //int rnum = rnd.Next(0, 6); 
+            int rnum = 0;
+            shape = shapeList[rnum];
 
-            for(int i = 0; i<4; i++)
+            for (int i = 0; i<4; i++)
             {
                 for(int k = 0; k<4; k++)
                 {
                     if(shape[k,i] == 1)
                     {
-
                         spriteBatch.Draw(block, new Vector2(posX+i*pixelWidth, posY+k*pixelLength), Colors[rnum]);
                     }
                 }
