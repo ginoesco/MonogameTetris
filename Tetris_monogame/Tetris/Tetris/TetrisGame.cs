@@ -27,6 +27,8 @@ namespace Tetris
         int[,] shape = new int[4, 4];
         int posX = 200;
         int posY = 200;
+        int boardX =330;
+        int boardY = 200; 
         int rotateIndex = 0;
         int rnum = 0;
 
@@ -146,7 +148,7 @@ namespace Tetris
             }
             if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
             {
-                 rnum = rnd.Next(0, 6); 
+                 rnum = rnd.Next(0, 7); 
 
             }
 
@@ -191,7 +193,7 @@ namespace Tetris
                     if (gameBoard[i,j] == 0)
                     {
                        boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
-                       spriteBatch.Draw(block, new Rectangle(i *size, j*size, size, size), new Rectangle (0,0,32,32), boardColor);
+                       spriteBatch.Draw(block, new Rectangle(boardX+i *size,boardY+j*size, size, size), new Rectangle (0,0,32,32), boardColor);
                     }
                 }
             }
@@ -199,7 +201,7 @@ namespace Tetris
 
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, "Score: ", new Vector2(400, 200), Color.Black);
+            spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
             spriteBatch.End();
 
             base.Draw(gameTime);
