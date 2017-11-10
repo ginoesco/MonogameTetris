@@ -77,3 +77,5 @@ C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetri
 C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.exe
 C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\obj\x86\Debug\Tetris.pdb
 Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Score.xnb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Score.xnb
+C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Window.xnb
