@@ -105,9 +105,11 @@ namespace Tetris
         protected override void Update(GameTime gameTime)
         {
             oldKeyState = currentKeyState;
-            currentKeyState = Keyboard.GetState(); 
-            
-            
+            currentKeyState = Keyboard.GetState();
+            int blocked = (int)GameBoard.BlockStates.Blocked;
+            int offGrid = (int)GameBoard.BlockStates.OffGrid;
+            int status = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -155,8 +157,12 @@ namespace Tetris
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                if(posX>boardX)
-                    posX -= pixelWidth; 
+
+
+                if (status != offGrid)
+                    posX -= pixelWidth;
+                
+                
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
             {
@@ -168,7 +174,7 @@ namespace Tetris
                 if(posY < boundsY)
                     posY += pixelWidth; 
             }
-            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
+            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter)) //Press enter key to change blocks, used for testing. 
             {
                  rnum = rnd.Next(0, 7); 
 
