@@ -113,20 +113,34 @@ namespace Tetris
 
 
             // TODO: Add your update logic here
-            if (rnum == 0)
-                rotate = shapeObj.GetRotate_T();
-            if (rnum == 1)
-                rotate = shapeObj.GetRotate_Z();
-            if (rnum == 2)
-                rotate = shapeObj.GetRotate_S();
-            if (rnum == 3)
-                rotate = shapeObj.GetRotate_L();
-            if (rnum == 4)
-                rotate = shapeObj.GetRotate_J();
-            if (rnum == 5)
-                rotate = shapeObj.GetRotate_Sq();
-            if (rnum == 6)
-                rotate = shapeObj.GetRotate_Line();
+   
+            //Grabs rotation list for the current block
+            switch (rnum)
+            {
+                case 0:
+                    rotate = shapeObj.GetRotate_T();
+                    break;
+                case 1:
+                    rotate = shapeObj.GetRotate_Z();
+                    break;
+                case 2:
+                    rotate = shapeObj.GetRotate_S();
+                    break;
+                case 3:
+                    rotate = shapeObj.GetRotate_L();
+                    break;
+                case 4:
+                    rotate = shapeObj.GetRotate_J();
+                    break;
+                case 5:
+                    rotate = shapeObj.GetRotate_Sq();
+                    break;
+                case 6:
+                    rotate = shapeObj.GetRotate_Line();
+                    break;
+                default:
+                    break; 
+            }
 
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             {
@@ -152,7 +166,7 @@ namespace Tetris
             if(Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 if(posY < boundsY)
-                posY += pixelWidth; 
+                    posY += pixelWidth; 
             }
             if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
             {
@@ -169,7 +183,7 @@ namespace Tetris
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
             List<int[,]> shapeList = shapeObj.GetShapeList();
             List<Color> Colors = shapeObj.GetColorList();
             List<int[,]> GameBoardList = gbObj.GetGameBoard(); 
