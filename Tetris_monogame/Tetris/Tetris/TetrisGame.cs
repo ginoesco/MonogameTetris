@@ -44,7 +44,9 @@ namespace Tetris
         int currentShape = 1;
         int nextShape;
         int moveLeftState = 0;
-        int moveRightState = 0; 
+        int moveRightState = 0;
+
+        Rectangle LRectangle, RRectangle, BRectangle; 
 
         public TetrisGame()
         {
@@ -76,6 +78,8 @@ namespace Tetris
         {
             // TODO: Add your initialization logic here
 
+            LRectangle = new Rectangle(0,0,320,1000);
+            RRectangle = new Rectangle(0,641, 359, 1000);
             base.Initialize();
         }
 
@@ -160,33 +164,26 @@ namespace Tetris
             else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
 
-                if (posX>boardX)
+                if (LRectangle.Intersects(block.Bounds))
                 {
-                    if(moveLeftState != offGrid)
-                    posX -= pixelWidth;
-
+                    posX = 330;
                 }
                 else
                 {
-                    moveRightState = 0;
+                    posX -= pixelWidth;
                 }
-                moveLeftState = blockstate;
-
 
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                if (posX < boundsX)
+                if (RRectangle.Intersects(block.Bounds))
                 {
-                    if(moveRightState != offGrid)
-                         posX += pixelWidth;
+                    posX = 640;
                 }
                 else
                 {
-                    moveLeftState = 0;
-                    //moveRightState = blockstate;
+                    posX += pixelWidth;
                 }
-                moveRightState = blockstate;
 
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
@@ -248,7 +245,7 @@ namespace Tetris
                         if (shape[k, i] == 1)
                         {
                             //spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
-                            spriteBatch.Draw(block, new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
+                           spriteBatch.Draw(block, new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
                         }
                     }
                 }
