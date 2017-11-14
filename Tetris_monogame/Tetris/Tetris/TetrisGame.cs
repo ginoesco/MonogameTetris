@@ -14,7 +14,8 @@ namespace Tetris
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
         Random rnd = new Random(DateTime.Now.Millisecond);
-        GameBoard gbObj = new GameBoard(); 
+        GameBoard gbObj = new GameBoard();
+        
         List<int[,]> rotate = new List<int[,]>();
         
         private Texture2D block, window;
@@ -32,9 +33,9 @@ namespace Tetris
         int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
-        int posX = 330;
+        int posX = 330+pixelWidth*4;
         int posY = 200;
-    
+       
         int boundsX = boardX + pixelWidth * 7;
         int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
@@ -43,7 +44,8 @@ namespace Tetris
         int temp = 0;
         int currentShape = 1;
         int nextShape;
-
+        int moveLeftState = 0;
+        int moveRightState = 0; 
 
         public TetrisGame()
         {
@@ -123,9 +125,12 @@ namespace Tetris
                     break;
             }
         }
-
         public void MoveKeys()
         {
+            int blocked = (int)GameBoard.BlockStates.Blocked; 
+            int offGrid = (int)GameBoard.BlockStates.OffGrid; 
+            int blockstate = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
+            Console.WriteLine("blockstate: {0}, {1}", moveLeftState, moveRightState);
 
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             { //updates when up is pressed
@@ -141,13 +146,33 @@ namespace Tetris
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                if (posX > boardX)
+
+                if (moveLeftState != offGrid)
+                {
                     posX -= pixelWidth;
+
+                }
+                else
+                {
+                    moveRightState = 0;
+                }
+                moveLeftState = blockstate;
+
+
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 if (posX < boundsX)
-                    posX += pixelWidth;
+                {
+                     posX += pixelWidth;
+                }
+                else
+                {
+                    moveLeftState = 0;
+                    //moveRightState = blockstate;
+                }
+                moveRightState = blockstate;
+
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {

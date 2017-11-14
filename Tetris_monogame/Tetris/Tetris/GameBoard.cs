@@ -12,7 +12,7 @@ namespace Tetris
         const int pixelWidth = 32;
         const int BoardWidth = 330;   //X,Y  position of the gameboard in the window
         const int BoardHeight = 200;
-        const int boundsX = BoardWidth + pixelWidth * 10;
+        const int boundsX = BoardWidth + pixelWidth * 7;
         public GameBoard()
         {
             int[,] TetrisBoard = new int[10, 18];
@@ -30,7 +30,7 @@ namespace Tetris
         {
             int blockDim = block.GetLength(0);
             // int boardX = 0;
-            //int boardY = 0; 
+            // int boardY = 0; 
 
             for (int px = 0; px < blockDim; px++)
             {
@@ -38,12 +38,13 @@ namespace Tetris
                 {
                     int boardX = px + x;
                     int boardY = py + y;
+                    Console.WriteLine("boardX, boundsX: {0}, {1}", boardX, boundsX);
                     //Check if space is empty
                     if (block[px, py] != 0)
                     {
-                        if (boardX < 330 || boardX >= boundsX)
+                        if (boardX <= BoardWidth || boardX >= boundsX)
                             return BlockStates.OffGrid;
-                        if (boardY >= BoardHeight || block[px, py] != 0)
+                        else if (boardY >= BoardHeight || block[px, py] != 0)
                             return BlockStates.Blocked;
                     }
 
