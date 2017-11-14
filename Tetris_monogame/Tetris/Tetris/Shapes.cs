@@ -21,8 +21,9 @@ namespace Tetris
         List<int[,]> RotateList_Sq = new List<int[,]>();
 
         private bool rotatable = false;
-
-
+        public Vector2 Location; 
+        protected readonly Texture2D texture;
+        protected readonly Texture2D gameBoundaries;
 
         List<Color> ColorList = new List<Color>();
         const int pixelWidth = 31;
@@ -221,6 +222,23 @@ namespace Tetris
 
 
 
+        }
+
+        public int Width
+        {
+            get { return texture.Width; }
+        }
+
+        public int Height
+        {
+            get { return texture.Height; }
+        }
+        public Rectangle BoundingBox
+        {
+            get
+            {
+                return new Rectangle((int)Location.X,(int)Location.Y, Width, Height);
+            }
         }
 
         public List<int[,]> GetShapeList()

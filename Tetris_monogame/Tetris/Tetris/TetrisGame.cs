@@ -228,7 +228,7 @@ namespace Tetris
                 Exit();
             //Checks for what keys are pressed, Moves or rotates block
             MoveKeys();
-            Fall();
+            //Fall();
             // TODO: Add your update logic here
                        
             base.Update(gameTime);
@@ -247,7 +247,8 @@ namespace Tetris
                     {
                         if (shape[k, i] == 1)
                         {
-                            spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                            //spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                            spriteBatch.Draw(block, new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
                         }
                     }
                 }
@@ -261,7 +262,8 @@ namespace Tetris
                     {
                         if (shape2[k, i] == 1)
                         {
-                            spriteBatch.Draw(block, new Vector2(750 + i * pixelWidth, 500 + k * pixelLength), Colors[nextShape]);
+                            //spriteBatch.Draw(block, new Vector2(750 + i * pixelWidth, 500 + k * pixelLength), Colors[nextShape]);
+                            spriteBatch.Draw(block, new Rectangle(750+i*pixelWidth, 500+k*pixelLength, pixelWidth, pixelLength), Colors[nextShape]);
                         }
                     }
                 }
