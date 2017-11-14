@@ -40,8 +40,7 @@ namespace Tetris
         int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
         int rnum = 0;
-        int rnum2 = 2;
-        int temp = 0;
+        int count = 0; //used in timer
         int currentShape = 1;
         int nextShape;
         int moveLeftState = 0;
@@ -94,6 +93,20 @@ namespace Tetris
             font = Content.Load<SpriteFont>("Score");
             window = Content.Load<Texture2D>("Window");
 
+        }
+
+        private void Fall()
+        {
+            int timer = 60;
+            if (posY < boundsY)
+            {
+                if (count == timer)
+                {
+                    posY += pixelWidth;
+                    count = 0;
+                }
+                count++;
+            }
         }
 
         private void Rotate(int currentShape)
@@ -186,7 +199,6 @@ namespace Tetris
                 currentShape = nextShape;
                 nextShape = rnum;
             }
-
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -214,6 +226,7 @@ namespace Tetris
                 Exit();
             //Checks for what keys are pressed, Moves or rotates block
             MoveKeys();
+            Fall();
             // TODO: Add your update logic here
                        
             base.Update(gameTime);
