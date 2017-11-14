@@ -15,7 +15,7 @@ namespace Tetris
         Shapes shapeObj = new Shapes();
         Random rnd = new Random(DateTime.Now.Millisecond);
         GameBoard gbObj = new GameBoard();
-        
+        Vector2 tetrisBlock; 
         List<int[,]> rotate = new List<int[,]>();
         
         private Texture2D block, window;
@@ -36,7 +36,7 @@ namespace Tetris
         int posX = 330 + pixelWidth * 4;
         int posY = 200;
        
-        int boundsX = boardX + pixelWidth * 7;
+        int boundsX = boardX + pixelWidth * 8;
         int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
         int rnum = 0;
@@ -45,6 +45,7 @@ namespace Tetris
         int nextShape;
         int moveLeftState = 0;
         int moveRightState = 0;
+        int moveDownState = 0; 
 
 
         public TetrisGame()
@@ -143,58 +144,52 @@ namespace Tetris
         public void MoveKeys()
         {
             int blocked = (int)GameBoard.BlockStates.Blocked; 
-            int offGrid = (int)GameBoard.BlockStates.OffGrid; 
-            int blockstate = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
-            Console.WriteLine("blockstate: {0}, {1}", moveLeftState, moveRightState);
-
+            int offGrid = (int)GameBoard.BlockStates.OffGrid;
+            // Console.WriteLine("blockstate: {0}, {1}", moveLeftState, moveRightState);
+            int rightWall = boundsX + pixelWidth * 9;
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             { //updates when up is pressed
                 Rotate(currentShape);
+             
                 if (rotateIndex < 4)
                 {
-                    Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+                     Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+
                 }
                 else
                 {
-                    rotateIndex = 0;
+                     rotateIndex = 0;
                 }
+                
+
             }
-            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyDown(Keys.Left))
+            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
             {
 
-                if(posX > boardX)
+               // blockstate = (int)gbObj.CheckPlacement(gameBoard, shape,(int)tetrisBlock.X, (int)tetrisBlock.Y);
+
+                if (moveLeftState >= 362)
                 {
-                    if (moveLeftState != offGrid)
-                    {
-                        posX -= pixelWidth;
-                    }
-                    else
-                    {
-                        moveLeftState = blockstate;
-                        moveRightState = 0; 
-                    }
+                    Console.WriteLine("moveLeft: {0}", moveLeftState); 
+                    posX -= pixelWidth; 
                 }
-             
+                
 
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            else if (oldKeyState.IsKeyDown(Keys.Right) && currentKeyState.IsKeyUp(Keys.Right))
             {
-                if (posX < boundsX)
+              
+                if(moveRightState <= boundsX)
                 {
-                    if(moveRightState != offGrid)
-                        posX += pixelWidth;
-                    else
-                    {
-                        moveRightState = blockstate;
-                        moveLeftState = 0; 
-                    }
+                    Console.WriteLine("moveRight: {0}", moveRightState);
+
+                    posX += pixelWidth; 
                 }
-               
 
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            else if (oldKeyState.IsKeyDown(Keys.Down) && currentKeyState.IsKeyUp(Keys.Down))
             {
-                if (posY < boundsY)
+                if (moveDownState < boundsY)
                     posY += pixelWidth;
             }
             else if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
@@ -224,9 +219,9 @@ namespace Tetris
         protected override void Update(GameTime gameTime)
         {
             oldKeyState = currentKeyState;
-            currentKeyState = Keyboard.GetState(); 
-            
-            
+            currentKeyState = Keyboard.GetState();
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             //Checks for what keys are pressed, Moves or rotates block
@@ -241,17 +236,40 @@ namespace Tetris
         {
             List<int[,]> shapeList = shapeObj.GetShapeList();
             List<Color> Colors = shapeObj.GetColorList();
+            int leftmostX = 99;
+            int rightmostX = -1;
+            int lowestY = 99; 
             if (whichShape) //Drawing the current game board shape
             {
                 shape = shapeList[currentShape];
+
                 for (int i = 0; i < 4; i++)
                 {
                     for (int k = 0; k < 4; k++)
                     {
                         if (shape[k, i] == 1)
                         {
-                            //spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
-                           spriteBatch.Draw(block, new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
+                            if (i < leftmostX)
+                            {
+                                leftmostX = i;
+                                moveLeftState = posX + i * pixelWidth;
+                                Console.WriteLine("posX, i, moveLeft: {0}, {1}, {2}", posX, i, moveLeftState);
+                            }
+                            if(i > rightmostX)
+                            {
+                                rightmostX = i; 
+                                moveRightState = posX + i*pixelWidth;
+                            }
+                            if(k < lowestY)
+                            {
+                                lowestY = i;
+                                moveDownState = posY + k * pixelLength;
+
+                            }
+                           // Console.WriteLine("lmx, rmx,lowY: {0}, {1}, {2}", leftmostX, rightmostX,lowestY);
+
+                            spriteBatch.Draw(block, tetrisBlock = new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                           //spriteBatch.Draw(block,  new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
                         }
                     }
                 }
@@ -297,6 +315,7 @@ namespace Tetris
                 {
                     if (gameBoard[i, j] == 0)
                     {
+
                         boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
                         spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), boardColor);
                     }

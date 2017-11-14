@@ -31,6 +31,7 @@ namespace Tetris
             {
                 return new Rectangle((int)Location.X, (int)Location.Y, Width, Height);
             }
+
         }
 
     }
