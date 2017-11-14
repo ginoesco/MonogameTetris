@@ -20,7 +20,7 @@ namespace Tetris
         List<int[,]> RotateList_Line = new List<int[,]>();
         List<int[,]> RotateList_Sq = new List<int[,]>();
 
-
+        private bool rotatable = false;
 
 
 
@@ -265,5 +265,12 @@ namespace Tetris
         {
             return RotateList_Sq;
         }
+
+        public bool Rotatable
+        {
+            get { return rotatable; }
+            set { rotatable = value; }
+        }
+
     }
 }

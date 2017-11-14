@@ -13,11 +13,11 @@ namespace Tetris
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
-        Random rnd = new Random();
+        Random rnd = new Random(DateTime.Now.Millisecond);
         GameBoard gbObj = new GameBoard(); 
         List<int[,]> rotate = new List<int[,]>();
         
-        private Texture2D block;
+        private Texture2D block, window;
         private SpriteFont font;
         private KeyboardState oldKeyState;
         private KeyboardState currentKeyState; 
@@ -28,6 +28,8 @@ namespace Tetris
         const int boardY = 200;
         const int size = 32;
         int[,] shape = new int[4, 4];
+        int[,] shape2 = new int[4, 4];
+        int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
         int posX = 330;
@@ -37,6 +39,10 @@ namespace Tetris
         int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
         int rnum = 0;
+        int rnum2 = 2;
+        int temp = 0;
+        int currentShape = 1;
+        int nextShape;
 
 
         public TetrisGame()
@@ -84,8 +90,39 @@ namespace Tetris
             // TODO: use this.Content to load your game content here
             block = Content.Load<Texture2D>("block");
             font = Content.Load<SpriteFont>("Score");
+            window = Content.Load<Texture2D>("Window");
+
         }
 
+        private void Rotate(int currentShape)
+        {
+            switch (currentShape)
+            {
+                case 0:
+                    rotate = shapeObj.GetRotate_T();
+                    break;
+                case 1:
+                    rotate = shapeObj.GetRotate_Z();
+                    break;
+                case 2:
+                    rotate = shapeObj.GetRotate_S();
+                    break;
+                case 3:
+                    rotate = shapeObj.GetRotate_L();
+                    break;
+                case 4:
+                    rotate = shapeObj.GetRotate_J();
+                    break;
+                case 5:
+                    rotate = shapeObj.GetRotate_Sq();
+                    break;
+                case 6:
+                    rotate = shapeObj.GetRotate_Line();
+                    break;
+                default:
+                    break;
+            }
+        }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -115,36 +152,11 @@ namespace Tetris
             // TODO: Add your update logic here
    
             //Grabs rotation list for the current block
-            switch (rnum)
-            {
-                case 0:
-                    rotate = shapeObj.GetRotate_T();
-                    break;
-                case 1:
-                    rotate = shapeObj.GetRotate_Z();
-                    break;
-                case 2:
-                    rotate = shapeObj.GetRotate_S();
-                    break;
-                case 3:
-                    rotate = shapeObj.GetRotate_L();
-                    break;
-                case 4:
-                    rotate = shapeObj.GetRotate_J();
-                    break;
-                case 5:
-                    rotate = shapeObj.GetRotate_Sq();
-                    break;
-                case 6:
-                    rotate = shapeObj.GetRotate_Line();
-                    break;
-                default:
-                    break; 
-            }
 
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
-            {
-                if(rotateIndex < 4)
+            { //updates when up is pressed
+                Rotate(currentShape);
+                if (rotateIndex < 4)
                 {
                     Array.Copy(rotate[rotateIndex++], shape, shape.Length);
                 }
@@ -169,12 +181,49 @@ namespace Tetris
                     posY += pixelWidth; 
             }
             if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
-            {
-                 rnum = rnd.Next(0, 7); 
+            { //updates when enter is pressed
+                rnum = rnd.Next(0, 7);
 
+                currentShape = nextShape;
+                nextShape = rnum;
             }
 
             base.Update(gameTime);
+        }
+
+        public void drawShape(bool whichShape)
+        {
+            List<int[,]> shapeList = shapeObj.GetShapeList();
+            List<Color> Colors = shapeObj.GetColorList();
+            if (whichShape) //Drawing the current game board shape
+            {
+                shape = shapeList[currentShape];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (shape[k, i] == 1)
+                        {
+                            spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                        }
+                    }
+                }
+            }
+            else //Drawing the shape in the next shape block
+            {
+                shape2 = shapeList[nextShape];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (shape2[k, i] == 1)
+                        {
+                            spriteBatch.Draw(block, new Vector2(750 + i * pixelWidth, 500 + k * pixelLength), Colors[nextShape]);
+                        }
+                    }
+                }
+            }
+            
         }
 
         /// <summary>
@@ -184,18 +233,15 @@ namespace Tetris
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            List<int[,]> shapeList = shapeObj.GetShapeList();
-            List<Color> Colors = shapeObj.GetColorList();
             List<int[,]> GameBoardList = gbObj.GetGameBoard(); 
             Color boardColor = new Color();
+            bool boardShape = true;
+            bool nextShape = false;
 
             // TODO: Add your drawing code here
 
-
-            //Creating the board state
-
             gameBoard = GameBoardList[0];
-
+            //Game board
             spriteBatch.Begin();
             for (int i = 0; i < 10; i++)
             {
@@ -210,27 +256,22 @@ namespace Tetris
             }
             spriteBatch.End();
 
+            //Drawing the shape to go onto the board
             spriteBatch.Begin();
-
-           // int rnum = 0;
-            shape = shapeList[rnum];
-
-            for (int i = 0; i<4; i++)
-            {
-                for(int k = 0; k<4; k++)
-                {
-                    if(shape[k,i] == 1)
-                    {
-                        spriteBatch.Draw(block, new Vector2(posX+i*pixelWidth, posY+k*pixelLength), Colors[rnum]);
-                    }
-                }
-            }
+            drawShape(boardShape);
             spriteBatch.End();
 
 
-
+            //display the score
             spriteBatch.Begin();
             spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
+            spriteBatch.End();
+
+            //Next block square
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.Black);
+            spriteBatch.Draw(window, new Rectangle(700,450, 200,200), Color.White );
+            drawShape(nextShape);
             spriteBatch.End();
 
             base.Draw(gameTime);
