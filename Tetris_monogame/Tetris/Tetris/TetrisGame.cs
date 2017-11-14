@@ -160,8 +160,9 @@ namespace Tetris
             else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
 
-                if (moveLeftState != offGrid)
+                if (posX>boardX)
                 {
+                    if(moveLeftState != offGrid)
                     posX -= pixelWidth;
 
                 }
@@ -177,7 +178,8 @@ namespace Tetris
             {
                 if (posX < boundsX)
                 {
-                     posX += pixelWidth;
+                    if(moveRightState != offGrid)
+                         posX += pixelWidth;
                 }
                 else
                 {
