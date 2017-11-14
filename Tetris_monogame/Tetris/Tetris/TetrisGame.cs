@@ -126,8 +126,6 @@ namespace Tetris
 
         public void MoveKeys()
         {
-            //oldKeyState = currentKeyState;
-            //currentKeyState = Keyboard.GetState();
 
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             { //updates when up is pressed
@@ -141,22 +139,22 @@ namespace Tetris
                     rotateIndex = 0;
                 }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 if (posX > boardX)
                     posX -= pixelWidth;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 if (posX < boundsX)
                     posX += pixelWidth;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 if (posY < boundsY)
                     posY += pixelWidth;
             }
-            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
+            else if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
             { //updates when enter is pressed
                 rnum = rnd.Next(0, 7);
 
@@ -189,7 +187,7 @@ namespace Tetris
             
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            //Checks for what keys are pressed, Moves or rotates block
             MoveKeys();
             // TODO: Add your update logic here
                        
