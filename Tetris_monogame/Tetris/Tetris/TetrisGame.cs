@@ -33,7 +33,7 @@ namespace Tetris
         int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
-        int posX = 330+pixelWidth*4;
+        int posX = 330 + pixelWidth * 4;
         int posY = 200;
        
         int boundsX = boardX + pixelWidth * 7;
@@ -46,7 +46,6 @@ namespace Tetris
         int moveLeftState = 0;
         int moveRightState = 0;
 
-        Rectangle LRectangle, RRectangle, BRectangle; 
 
         public TetrisGame()
         {
@@ -78,8 +77,7 @@ namespace Tetris
         {
             // TODO: Add your initialization logic here
 
-            LRectangle = new Rectangle(298,200,pixelWidth,pixelLength*18);
-            RRectangle = new Rectangle(0,641, 359, 1000);
+          
             base.Initialize();
         }
 
@@ -164,26 +162,34 @@ namespace Tetris
             else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyDown(Keys.Left))
             {
 
-                if(!LRectangle.Intersects(block.Bounds))
+                if(posX > boardX)
                 {
-                    posX = boardX; 
+                    if (moveLeftState != offGrid)
+                    {
+                        posX -= pixelWidth;
+                    }
+                    else
+                    {
+                        moveLeftState = blockstate;
+                        moveRightState = 0; 
+                    }
                 }
-                else
-                {
-                    posX -= pixelWidth;
-                }
+             
 
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                if (RRectangle.Intersects(block.Bounds))
+                if (posX < boundsX)
                 {
-                    posX = 640;
+                    if(moveRightState != offGrid)
+                        posX += pixelWidth;
+                    else
+                    {
+                        moveRightState = blockstate;
+                        moveLeftState = 0; 
+                    }
                 }
-                else
-                {
-                    posX += pixelWidth;
-                }
+               
 
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.Down))
@@ -281,9 +287,7 @@ namespace Tetris
             bool nextShape = false;
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(block, new Rectangle(298, 200, pixelWidth, pixelLength*19), Color.Aquamarine);
-            spriteBatch.End(); 
+           
             gameBoard = GameBoardList[0];
             //Game board
             spriteBatch.Begin();
