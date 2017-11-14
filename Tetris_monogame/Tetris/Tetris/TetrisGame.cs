@@ -78,7 +78,7 @@ namespace Tetris
         {
             // TODO: Add your initialization logic here
 
-            LRectangle = new Rectangle(0,0,320,1000);
+            LRectangle = new Rectangle(298,200,pixelWidth,pixelLength*18);
             RRectangle = new Rectangle(0,641, 359, 1000);
             base.Initialize();
         }
@@ -161,12 +161,12 @@ namespace Tetris
                     rotateIndex = 0;
                 }
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyDown(Keys.Left))
             {
 
-                if (LRectangle.Intersects(block.Bounds))
+                if(!LRectangle.Intersects(block.Bounds))
                 {
-                    posX = 330;
+                    posX = boardX; 
                 }
                 else
                 {
@@ -281,7 +281,9 @@ namespace Tetris
             bool nextShape = false;
 
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
+            spriteBatch.Draw(block, new Rectangle(298, 200, pixelWidth, pixelLength*19), Color.Aquamarine);
+            spriteBatch.End(); 
             gameBoard = GameBoardList[0];
             //Game board
             spriteBatch.Begin();
