@@ -13,11 +13,12 @@ namespace Tetris
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Shapes shapeObj = new Shapes();
-        Random rnd = new Random();
-        GameBoard gbObj = new GameBoard(); 
+        Random rnd = new Random(DateTime.Now.Millisecond);
+        GameBoard gbObj = new GameBoard();
+        
         List<int[,]> rotate = new List<int[,]>();
         
-        private Texture2D block;
+        private Texture2D block, window;
         private SpriteFont font;
         private KeyboardState oldKeyState;
         private KeyboardState currentKeyState; 
@@ -28,15 +29,22 @@ namespace Tetris
         const int boardY = 200;
         const int size = 32;
         int[,] shape = new int[4, 4];
+        int[,] shape2 = new int[4, 4];
+        int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
-        int posX = 330;
+        int posX = 330+pixelWidth*4;
         int posY = 200;
-    
+       
         int boundsX = boardX + pixelWidth * 7;
         int boundsY = boardY + pixelWidth * 16; 
         int rotateIndex = 0;
         int rnum = 0;
+        int count = 0; //used in timer
+        int currentShape = 1;
+        int nextShape;
+        int moveLeftState = 0;
+        int moveRightState = 0;
 
 
         public TetrisGame()
@@ -69,6 +77,7 @@ namespace Tetris
         {
             // TODO: Add your initialization logic here
 
+          
             base.Initialize();
         }
 
@@ -84,40 +93,27 @@ namespace Tetris
             // TODO: use this.Content to load your game content here
             block = Content.Load<Texture2D>("block");
             font = Content.Load<SpriteFont>("Score");
+            window = Content.Load<Texture2D>("Window");
+
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
+        private void Fall()
         {
-            // TODO: Unload any non ContentManager content here
-            block.Dispose(); 
+            int timer = 60;
+            if (posY < boundsY)
+            {
+                if (count == timer)
+                {
+                    posY += pixelWidth;
+                    count = 0;
+                }
+                count++;
+            }
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
-        protected override void Update(GameTime gameTime)
+        private void Rotate(int currentShape)
         {
-            oldKeyState = currentKeyState;
-            currentKeyState = Keyboard.GetState();
-            int blocked = (int)GameBoard.BlockStates.Blocked;
-            int offGrid = (int)GameBoard.BlockStates.OffGrid;
-            int status = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-
-            // TODO: Add your update logic here
-   
-            //Grabs rotation list for the current block
-            switch (rnum)
+            switch (currentShape)
             {
                 case 0:
                     rotate = shapeObj.GetRotate_T();
@@ -141,46 +137,141 @@ namespace Tetris
                     rotate = shapeObj.GetRotate_Line();
                     break;
                 default:
-                    break; 
+                    break;
             }
+        }
+        public void MoveKeys()
+        {
+            int blocked = (int)GameBoard.BlockStates.Blocked; 
+            int offGrid = (int)GameBoard.BlockStates.OffGrid; 
+            int blockstate = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
+            Console.WriteLine("blockstate: {0}, {1}", moveLeftState, moveRightState);
 
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
-            {
-                if(rotateIndex < 4)
+            { //updates when up is pressed
+                Rotate(currentShape);
+                if (rotateIndex < 4)
                 {
                     Array.Copy(rotate[rotateIndex++], shape, shape.Length);
                 }
                 else
                 {
-                    rotateIndex = 0; 
+                    rotateIndex = 0;
                 }
             }
-            if(Keyboard.GetState().IsKeyDown(Keys.Left))
+            else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyDown(Keys.Left))
             {
 
-
-                if (status != offGrid)
-                    posX -= pixelWidth;
-                
-                
-            }
-            if(Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                if(posX < boundsX)
-                    posX += pixelWidth; 
-            }
-            if(Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                if(posY < boundsY)
-                    posY += pixelWidth; 
-            }
-            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter)) //Press enter key to change blocks, used for testing. 
-            {
-                 rnum = rnd.Next(0, 7); 
+                if(posX > boardX)
+                {
+                    if (moveLeftState != offGrid)
+                    {
+                        posX -= pixelWidth;
+                    }
+                    else
+                    {
+                        moveLeftState = blockstate;
+                        moveRightState = 0; 
+                    }
+                }
+             
 
             }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                if (posX < boundsX)
+                {
+                    if(moveRightState != offGrid)
+                        posX += pixelWidth;
+                    else
+                    {
+                        moveRightState = blockstate;
+                        moveLeftState = 0; 
+                    }
+                }
+               
 
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                if (posY < boundsY)
+                    posY += pixelWidth;
+            }
+            else if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
+            { //updates when enter is pressed
+                rnum = rnd.Next(0, 7);
+
+                currentShape = nextShape;
+                nextShape = rnum;
+            }
+        }
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+            block.Dispose(); 
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+
+        protected override void Update(GameTime gameTime)
+        {
+            oldKeyState = currentKeyState;
+            currentKeyState = Keyboard.GetState(); 
+            
+            
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+            //Checks for what keys are pressed, Moves or rotates block
+            MoveKeys();
+            //Fall();
+            // TODO: Add your update logic here
+                       
             base.Update(gameTime);
+        }
+
+        public void drawShape(bool whichShape)
+        {
+            List<int[,]> shapeList = shapeObj.GetShapeList();
+            List<Color> Colors = shapeObj.GetColorList();
+            if (whichShape) //Drawing the current game board shape
+            {
+                shape = shapeList[currentShape];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (shape[k, i] == 1)
+                        {
+                            //spriteBatch.Draw(block, new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                           spriteBatch.Draw(block, new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
+                        }
+                    }
+                }
+            }
+            else //Drawing the shape in the next shape block
+            {
+                shape2 = shapeList[nextShape];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int k = 0; k < 4; k++)
+                    {
+                        if (shape2[k, i] == 1)
+                        {
+                            //spriteBatch.Draw(block, new Vector2(750 + i * pixelWidth, 500 + k * pixelLength), Colors[nextShape]);
+                            spriteBatch.Draw(block, new Rectangle(750+i*pixelWidth, 500+k*pixelLength, pixelWidth, pixelLength), Colors[nextShape]);
+                        }
+                    }
+                }
+            }
+            
         }
 
         /// <summary>
@@ -190,18 +281,15 @@ namespace Tetris
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            List<int[,]> shapeList = shapeObj.GetShapeList();
-            List<Color> Colors = shapeObj.GetColorList();
             List<int[,]> GameBoardList = gbObj.GetGameBoard(); 
             Color boardColor = new Color();
+            bool boardShape = true;
+            bool nextShape = false;
 
             // TODO: Add your drawing code here
-
-
-            //Creating the board state
-
+           
             gameBoard = GameBoardList[0];
-
+            //Game board
             spriteBatch.Begin();
             for (int i = 0; i < 10; i++)
             {
@@ -216,27 +304,22 @@ namespace Tetris
             }
             spriteBatch.End();
 
+            //Drawing the shape to go onto the board
             spriteBatch.Begin();
-
-           // int rnum = 0;
-            shape = shapeList[rnum];
-
-            for (int i = 0; i<4; i++)
-            {
-                for(int k = 0; k<4; k++)
-                {
-                    if(shape[k,i] == 1)
-                    {
-                        spriteBatch.Draw(block, new Vector2(posX+i*pixelWidth, posY+k*pixelLength), Colors[rnum]);
-                    }
-                }
-            }
+            drawShape(boardShape);
             spriteBatch.End();
 
 
-
+            //display the score
             spriteBatch.Begin();
             spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
+            spriteBatch.End();
+
+            //Next block square
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.Black);
+            spriteBatch.Draw(window, new Rectangle(700,450, 200,200), Color.White );
+            drawShape(nextShape);
             spriteBatch.End();
 
             base.Draw(gameTime);
