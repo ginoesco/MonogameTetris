@@ -123,6 +123,48 @@ namespace Tetris
                     break;
             }
         }
+
+        public void MoveKeys()
+        {
+            //oldKeyState = currentKeyState;
+            //currentKeyState = Keyboard.GetState();
+
+            if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
+            { //updates when up is pressed
+                Rotate(currentShape);
+                if (rotateIndex < 4)
+                {
+                    Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+                }
+                else
+                {
+                    rotateIndex = 0;
+                }
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                if (posX > boardX)
+                    posX -= pixelWidth;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                if (posX < boundsX)
+                    posX += pixelWidth;
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                if (posY < boundsY)
+                    posY += pixelWidth;
+            }
+            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
+            { //updates when enter is pressed
+                rnum = rnd.Next(0, 7);
+
+                currentShape = nextShape;
+                nextShape = rnum;
+            }
+
+        }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -148,46 +190,9 @@ namespace Tetris
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
+            MoveKeys();
             // TODO: Add your update logic here
-   
-            //Grabs rotation list for the current block
-
-            if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
-            { //updates when up is pressed
-                Rotate(currentShape);
-                if (rotateIndex < 4)
-                {
-                    Array.Copy(rotate[rotateIndex++], shape, shape.Length);
-                }
-                else
-                {
-                    rotateIndex = 0; 
-                }
-            }
-            if(Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                if(posX>boardX)
-                    posX -= pixelWidth; 
-            }
-            if(Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                if(posX < boundsX)
-                    posX += pixelWidth; 
-            }
-            if(Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                if(posY < boundsY)
-                    posY += pixelWidth; 
-            }
-            if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
-            { //updates when enter is pressed
-                rnum = rnd.Next(0, 7);
-
-                currentShape = nextShape;
-                nextShape = rnum;
-            }
-
+                       
             base.Update(gameTime);
         }
 
