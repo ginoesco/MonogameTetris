@@ -32,6 +32,7 @@ namespace Tetris
         int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
 
+        int counter = 0;
         int posX = 330;
         int posY = 200;
     
@@ -94,6 +95,10 @@ namespace Tetris
 
         }
 
+        /// <summary>
+        /// Rotating shapes 
+        /// </summary>
+        /// <param name="currentShape"></param>
         private void Rotate(int currentShape)
         {
             switch (currentShape)
@@ -121,6 +126,23 @@ namespace Tetris
                     break;
                 default:
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Move the blocks down at a certain speed using a timer
+        /// </summary>
+        private void Fall()
+        {
+            int timer = 60; //This is to make it fall 1 row/sec
+            if (posY < boundsY)
+            {
+                if (counter == timer)
+                {
+                    posY += pixelWidth;
+                    counter = 0;
+                }
+                counter++;
             }
         }
         /// <summary>
@@ -177,8 +199,8 @@ namespace Tetris
             }
             if(Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                if(posY < boundsY)
-                    posY += pixelWidth; 
+                if (posY < boundsY)
+                    posY += pixelWidth;
             }
             if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
             { //updates when enter is pressed
@@ -187,7 +209,7 @@ namespace Tetris
                 currentShape = nextShape;
                 nextShape = rnum;
             }
-
+            Fall();
             base.Update(gameTime);
         }
 
