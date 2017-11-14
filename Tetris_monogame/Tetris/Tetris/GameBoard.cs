@@ -42,7 +42,7 @@ namespace Tetris
                     //Check if space is empty
                     if (block[px, py] != 0)
                     {
-                        if (boardX <= BoardWidth || boardX >= boundsX)
+                        if (boardX < BoardWidth || boardX >= boundsX)
                             return BlockStates.OffGrid;
                         else if (boardY >= BoardHeight || block[px, py] != 0)
                             return BlockStates.Blocked;
