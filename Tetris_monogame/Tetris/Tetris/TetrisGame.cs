@@ -150,17 +150,27 @@ namespace Tetris
             if (oldKeyState.IsKeyDown(Keys.Up) && currentKeyState.IsKeyUp(Keys.Up))
             { //updates when up is pressed
                 Rotate(currentShape);
-             
-                if (rotateIndex < 4)
-                {
-                     Array.Copy(rotate[rotateIndex++], shape, shape.Length);
 
-                }
-                else
+                if ((currentShape == 6 || currentShape == 3 || currentShape == 4) && (moveLeftState >= 362 && moveRightState <= boundsX))
                 {
-                     rotateIndex = 0;
+                    Console.WriteLine("here");
+                    if (rotateIndex < 4)
+                        Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+                    else
+                        rotateIndex = 0;
                 }
-                
+                else if (currentShape != 6 && currentShape != 4  && currentShape != 3)
+                {
+                    if (rotateIndex < 4)
+                    {
+                        Array.Copy(rotate[rotateIndex++], shape, shape.Length);
+
+                    }
+                    else
+                    {
+                        rotateIndex = 0;
+                    }
+                }
 
             }
             else if (oldKeyState.IsKeyDown(Keys.Left) && currentKeyState.IsKeyUp(Keys.Left))
@@ -247,13 +257,13 @@ namespace Tetris
                 {
                     for (int k = 0; k < 4; k++)
                     {
-                        if (shape[k, i] == 1)
+                        if (shape[k, i] != 0)
                         {
                             if (i < leftmostX)
                             {
                                 leftmostX = i;
                                 moveLeftState = posX + i * pixelWidth;
-                                Console.WriteLine("posX, i, moveLeft: {0}, {1}, {2}", posX, i, moveLeftState);
+                                //Console.WriteLine("posX, i, moveLeft: {0}, {1}, {2}", posX, i, moveLeftState);
                             }
                             if(i > rightmostX)
                             {
@@ -269,6 +279,7 @@ namespace Tetris
                            // Console.WriteLine("lmx, rmx,lowY: {0}, {1}, {2}", leftmostX, rightmostX,lowestY);
 
                             spriteBatch.Draw(block, tetrisBlock = new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+
                            //spriteBatch.Draw(block,  new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
                         }
                     }
