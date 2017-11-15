@@ -13,9 +13,19 @@ namespace Tetris
     {
 
         public Vector2 Location;
+        Shapes shapeObj = new Shapes(); 
         protected readonly Texture2D texture;
         protected readonly Texture2D gameBoundaries;
 
+        public Sprites()
+        {
+
+        }
+        public void SpawnNewBlock(int currentShape, int x, int y)
+        {
+            List<int[,]> ShapeList = new List<int[,]>(shapeObj.GetShapeList());
+
+        }
         public int Width
         {
             get { return texture.Width; }
