@@ -15,7 +15,7 @@ namespace Tetris
         const int pixelLength = 32; 
         const int BoardWidth = 330;   //X,Y  position of the gameboard in the window
         const int BoardHeight = 200;
-        const int boundsX = BoardWidth+pixelWidth*9;
+        const int boundsX = BoardWidth+pixelWidth*12;
         const int boundsY = BoardHeight + pixelWidth * 17;
         public GameBoard()
         {
@@ -35,24 +35,23 @@ namespace Tetris
         public BlockStates CheckPlacement(int[,] gameboard, int[,] block, int x, int y)
         {
             int blockDim = block.GetLength(0);
-           // Console.WriteLine("X,Y: {0},{1}", x, y); 
-
-            for (int px = 0; px < blockDim; px++)
+            // Console.WriteLine("X,Y: {0},{1}", x, y); 
+         
+            int px, py; 
+            for (px = 0; px < blockDim; px++)
             {
-                for (int py = 0; py < blockDim; py++)
+                for (py = 0; py < blockDim; py++)
                 {
-
-                    int boardX = px*pixelWidth + x;
-                    int boardY = py*pixelLength + y;
-                   // Console.WriteLine("boardY {0}, boundsY {1}, py {2}", boardY, boundsY,py);
+                    //int boardX = px*pixelWidth + x;     //+x
+                    //int boardY = py*pixelLength + y;   //+y
+                    // Console.WriteLine("boardY {0}, boundsY {1}, py {2}", boardY, boundsY,py);
                     //Check if space is empty
-
 
                     if (block[py, px] != 0)
                     {
-                        if (boardX <= BoardWidth || boardX >= boundsX)
+                        if (x <= BoardWidth || x >= boundsX)
                             return BlockStates.OffGrid;
-                        if (boardY >= boundsY || gameboard[px, py] != 0)
+                        if (y >= boundsY || gameboard[px, py] != 0)
                             return BlockStates.Blocked;
                         
                     }
@@ -68,40 +67,50 @@ namespace Tetris
             int[,] loadboard = new int[10, 18];
             int boardX, boardY; 
             Array.Copy(gameboard, loadboard, gameboard.Length);
-            int length = loadboard.GetLength(0);
-            int width = loadboard.GetLength(1);
-            for (int i = 0; i<block.GetLength(0); i++)
-            {
-                for(int k = 0; k<block.GetLength(0); k++)
-                {
-                    if(block[k,i] != 0)
-                    {
-                        for(int px = 0; px<width; px++)
-                        {
-                            for(int py = 0; py<length; py++)
-                            {
-                                boardX = 330 + px * pixelWidth;
-                                boardY = 200 + py * pixelLength;
+            int length = loadboard.GetLength(1);
+            int width = loadboard.GetLength(0);
 
-                                if(boardX == x && boardY == y)
-                                {
-                                    loadboard[px, py] = 1; 
-                                }
-                            }
-                        }
-                        
+            for (int py = 0; py < length; py++)
+            {
+                for (int px = 0; px < width; px++)
+                {
+                    boardX = 330 + px * pixelWidth;
+                    boardY = 200 + py * pixelLength;
+                    
+                    
+                    if(boardX == x && boardY == y)
+                    {
+                        loadboard[px, py] = 1;
+                      
                     }
+
                 }
             }
-            
+
+
             return loadboard; 
+        }
+
+        public void ShowBoard(int[,] board)
+        {
+            Console.WriteLine("X width, y length: {0},{1}", board.GetLength(1),board.GetLength(0)); 
+            
+            for(int y = 0; y < board.GetLength(1); y++)
+            {
+                for(int x = 0; x<board.GetLength(0); x++)
+                {
+                    Console.Write(" "+board[x, y]); 
+                }
+                Console.WriteLine("");
+
+            }
         }
 
         public void UpdateBoard(int[,]gameboard, Texture2D block, SpriteBatch spriteBatch)
         {
-            for(int i = 0; i<gameboard.GetLength(0);i++)
+            for(int i = 0; i<gameboard.GetLength(0);i++) //length
             {
-                for(int k = 0; k<gameboard.GetLength(1); k++)
+                for(int k = 0; k<gameboard.GetLength(1); k++) //width
                 {
                     if(gameboard[i,k] != 0)
                     {

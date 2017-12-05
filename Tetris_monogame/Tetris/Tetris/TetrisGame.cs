@@ -33,9 +33,12 @@ namespace Tetris
         int[,] rotated = new int[4, 4];
         int[,] gameBoard = new int[10, 18]; // 10x 18 board
         int[,] loadedBoard = new int[10, 18];
+        int[] xcoords = new int[4];
+        int[] ycoords = new int[4]; 
 
         int posX = 330 + pixelWidth * 4;
         int posY = 200;
+ 
        
         int boundsX = boardX + pixelWidth * 8;
         int boundsY = boardY + pixelWidth * 16; 
@@ -203,7 +206,7 @@ namespace Tetris
             }
             else if (oldKeyState.IsKeyDown(Keys.Down) && currentKeyState.IsKeyUp(Keys.Down))
             {
-                if (moveDownState <= boundsY)
+                //if (moveDownState <= boundsY)
                     posY += pixelWidth;
             }
             else if (oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter))
@@ -238,18 +241,29 @@ namespace Tetris
         {
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
-            int blockstate = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY);
-            int blocked = (int)GameBoard.BlockStates.Blocked; 
+            //int blockstate = blockstate = (int)gbObj.CheckPlacement(gameBoard, shape, posX, posY));
+            int blockstate = -1;
+            int blocked = (int)GameBoard.BlockStates.Blocked;
+            for(int i =0; i<4; i++)
+            {
+                blockstate = (int)gbObj.CheckPlacement(loadedBoard, shape, xcoords[i], ycoords[i]);
+
+            }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             //Checks for what keys are pressed, Moves or rotates block
             if( blockstate != blocked ||(oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyUp(Keys.Enter)))
                 MoveKeys();
-            //Console.WriteLine("blockstate: {0}",blockstate);
-            Console.WriteLine("posX, posY: {0}, {1}", posX, posY);
-            if(blockstate == blocked)
-                 loadedBoard = gbObj.LoadBoard(loadedBoard, shape, posX, posY);
-
+            Console.WriteLine("blockstate: {0}",blockstate);
+            //Console.WriteLine("posX, posY: {0}, {1}", posX, posY);
+            if (blockstate == blocked)
+            {
+                for(int i = 0; i<4; i++)
+                {
+                    Array.Copy(gbObj.LoadBoard(loadedBoard, shape, xcoords[i], ycoords[i]), loadedBoard, loadedBoard.Length);
+                }
+                gbObj.ShowBoard(loadedBoard);
+            }
             //Fall();
             // TODO: Add your update logic here
 
@@ -262,7 +276,8 @@ namespace Tetris
             List<Color> Colors = shapeObj.GetColorList();
             int leftmostX = 99;
             int rightmostX = -1;
-            int lowestY = -1; 
+            int lowestY = -1;
+            int j = 0; 
             if (whichShape) //Drawing the current game board shape
             {
                 shape = shapeList[currentShape];
@@ -277,7 +292,6 @@ namespace Tetris
                             {
                                 leftmostX = i;
                                 moveLeftState = posX + i * pixelWidth;
-                                //Console.WriteLine("posX, i, moveLeft: {0}, {1}, {2}", posX, i, moveLeftState);
                             }
                             if(i > rightmostX)
                             {
@@ -290,12 +304,20 @@ namespace Tetris
                                 moveDownState = posY + k * pixelLength;
   
                             }
-                           // Console.WriteLine("lmx, rmx,lowY: {0}, {1}, {2}", leftmostX, rightmostX, lowestY);
 
                             spriteBatch.Draw(block, tetrisBlock = new Vector2(posX + i * pixelWidth, posY + k * pixelLength), Colors[currentShape]);
+                       
 
-                           //spriteBatch.Draw(block,  new Rectangle(posX+i*pixelWidth, posY+k*pixelLength,pixelWidth, pixelLength),Colors[currentShape]);
+                            if (j < 4)
+                            {
+                                xcoords[j] = posX + i * pixelWidth;
+                                ycoords[j] = posY + k * pixelLength;
+                                j++;
+                            }
+
                         }
+
+
                     }
                 }
             }
@@ -333,10 +355,7 @@ namespace Tetris
            
             gameBoard = GameBoardList[0];
             //Game board
-            gbObj.UpdateBoard(loadedBoard, block, spriteBatch);
-
             spriteBatch.Begin();
-
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 18; j++)
@@ -350,6 +369,8 @@ namespace Tetris
                 }
             }
             spriteBatch.End();
+            gbObj.UpdateBoard(loadedBoard, block, spriteBatch);
+
 
             //Drawing the shape to go onto the board
             spriteBatch.Begin();
