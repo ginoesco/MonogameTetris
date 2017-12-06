@@ -6,9 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
-namespace GameMenuScreen
+namespace Tetris
 {
-    //normal
     class Button
     {
         Rectangle posSize;
@@ -111,5 +110,4 @@ namespace GameMenuScreen
         }
 
     }
-
 }
