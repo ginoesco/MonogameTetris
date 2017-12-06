@@ -290,7 +290,7 @@ namespace Tetris
             {
                 case menuScreen:
                 if (playGameButton.update(new Vector2(currentMouseState.X, currentMouseState.Y)) == true && currentMouseState != lastMouseState && currentMouseState.LeftButton == ButtonState.Pressed
-                            || oldKeyState.IsKeyDown(Keys.Enter))
+                            || currentKeyState.IsKeyDown(Keys.Enter))
                 {//play the game
                         currentScreen = game;
                 }
