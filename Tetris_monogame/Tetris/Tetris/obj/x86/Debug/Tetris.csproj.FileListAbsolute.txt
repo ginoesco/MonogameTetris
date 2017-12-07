@@ -117,3 +117,8 @@ C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetri
 C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Tetris.wma
 C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Tetris.xnb
 C:\Users\Onger Donger\Desktop\Tetris\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\tetris_logo.xnb
+Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Tetris.xnb
+Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\tetris_logo.xnb
+Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\PlayGame.xnb
+Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\Tetris.wma
+Y:\Documents\GitHub\MonogameTetris\Tetris_monogame\Tetris\Tetris\bin\Windows\x86\Debug\Content\options.xnb
