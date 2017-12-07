@@ -126,9 +126,7 @@ namespace Tetris
         }
 
         public void ShowBoard(int[,] board)
-        {
-            Console.WriteLine("X width, y length: {0},{1}", board.GetLength(1),board.GetLength(0)); 
-            
+        {            
             for(int y = 0; y < board.GetLength(1); y++)
             {
                 for(int x = 0; x<board.GetLength(0); x++)
@@ -149,12 +147,31 @@ namespace Tetris
                 {
                     if(gameboard[i,k] != 0)
                     {
-                        Console.WriteLine("gameboard: {0}", gameboard[i, k]);
-
                         spriteBatch.Begin();
                         spriteBatch.Draw(block, new Vector2(BoardWidth + i * pixelWidth, BoardHeight + k * pixelLength), colors[gameboard[i,k]-1]); 
                         spriteBatch.End();
                     }
+                }
+            }
+        }
+
+        public void ClearRows(int[,]gameboard)
+        {
+            int boardLength = gameboard.GetLength(0);
+            int boardWidth = gameboard.GetLength(1);
+            bool clearRow = true; 
+            for(int y = 0; y<boardLength; y++)
+            {
+                for(int x = 0; x<boardWidth;x++)
+                {
+                    if (gameboard[x,y] == 0)
+                    {
+                        clearRow = false; 
+                    }
+                }
+                if(clearRow)
+                {
+
                 }
             }
         }
