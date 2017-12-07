@@ -12,10 +12,10 @@ namespace Tetris
     class Sprites
     {
 
-        public Vector2 Location;
+       // public Vector2 Location;
         Shapes shapeObj = new Shapes(); 
-        protected readonly Texture2D texture;
-        protected readonly Texture2D gameBoundaries;
+       // protected readonly Texture2D texture;
+       // protected readonly Texture2D gameBoundaries;
 
         public Sprites()
         {
@@ -26,23 +26,8 @@ namespace Tetris
             List<int[,]> ShapeList = new List<int[,]>(shapeObj.GetShapeList());
 
         }
-        public int Width
-        {
-            get { return texture.Width; }
-        }
-
-        public int Height
-        {
-            get { return texture.Height; }
-        }
-        public Rectangle BoundingBox
-        {
-            get
-            {
-                return new Rectangle((int)Location.X, (int)Location.Y, Width, Height);
-            }
-
-        }
+ 
+        
 
     }
 }
