@@ -26,9 +26,9 @@ namespace Tetris
 
         public enum BlockStates
         {
-            Blocked,
-            OffGrid,
-            CanSet
+            Blocked,  //blockstate = 0
+            OffGrid,  //blockstate = 1 
+            CanSet    //blockstate = 2
         }
 
 
