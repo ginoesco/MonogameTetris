@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using System;
 namespace Tetris
@@ -19,6 +20,16 @@ namespace Tetris
         List<int[,]> rotate = new List<int[,]>();
 
         private Texture2D block, window;
+        private Texture2D options, background, playGame; //game menu
+
+        Button optionButton, playGameButton;
+        Song themeSong;
+
+        MouseState newMouseState, lastMouseState;
+        const byte menuScreen = 0, game = 1, optionScreen = 2;
+        int currentScreen = menuScreen;
+
+
         private SpriteFont font;
         private KeyboardState oldKeyState;
         private KeyboardState currentKeyState;
@@ -81,7 +92,7 @@ namespace Tetris
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            this.IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -99,6 +110,21 @@ namespace Tetris
             block = Content.Load<Texture2D>("block");
             font = Content.Load<SpriteFont>("Score");
             window = Content.Load<Texture2D>("Window");
+
+            //game menu
+            playGame = Content.Load<Texture2D>("PlayGame");
+            options = Content.Load<Texture2D>("options");
+            background = Content.Load<Texture2D>("tetris_logo");
+
+            optionButton = new Button(new Rectangle(400, 100, options.Width, options.Height), true);
+            optionButton.load(Content, "options");
+
+            playGameButton = new Button(new Rectangle(300, 100, 100, 200), true);
+            playGameButton.load(Content, "PlayGame");
+
+            //Music
+            themeSong = Content.Load<Song>("Tetris");
+            MediaPlayer.Play(themeSong);
 
         }
 
@@ -280,6 +306,32 @@ namespace Tetris
             Fall();
             // TODO: Add your update logic here
 
+            newMouseState = Mouse.GetState();
+            //Testing menu
+            switch (currentScreen)
+            {
+                case menuScreen:
+
+                    if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Released
+                                || currentKeyState.IsKeyDown(Keys.Enter))
+                    {//play the game
+                        currentScreen = game;
+                    }
+                    if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Pressed)
+                    {//goto options screen
+                        currentScreen = optionScreen;
+                    }
+                    break;
+
+                case game:
+                    if (currentKeyState != oldKeyState && currentKeyState.IsKeyDown(Keys.Escape))
+                    {
+                        currentScreen = menuScreen;
+                    }
+                    break;
+            }
+            lastMouseState = newMouseState;
+
             base.Update(gameTime);
         }
 
@@ -357,52 +409,60 @@ namespace Tetris
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Gray);
-            List<int[,]> GameBoardList = gbObj.GetGameBoard();
-            Color boardColor = new Color();
-            bool boardShape = true;
-            bool nextShape = false;
-
-            // TODO: Add your drawing code here
-
-            gameBoard = GameBoardList[0];
-            //Game board
-            spriteBatch.Begin();
-            for (int i = 0; i < 10; i++)
+            switch (currentScreen)
             {
-                for (int j = 0; j < 18; j++)
-                {
-                    if (gameBoard[i, j] == 0)
+                case menuScreen:
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
+                    spriteBatch.Draw(playGame, new Rectangle(300, 100, playGame.Width, playGame.Height), Color.White);
+                    spriteBatch.Draw(options, new Rectangle(400, 100, options.Width, options.Height), Color.White);
+                    spriteBatch.End();
+                    break;
+                case game:
+                    GraphicsDevice.Clear(Color.Gray);
+                    List<int[,]> GameBoardList = gbObj.GetGameBoard();
+                    Color boardColor = new Color();
+                    bool boardShape = true;
+                    bool nextShape = false;
+                    gameBoard = GameBoardList[0];
+                    //Game board
+                    spriteBatch.Begin();
+                    for (int i = 0; i < 10; i++)
                     {
+                        for (int j = 0; j < 18; j++)
+                        {
+                            if (gameBoard[i, j] == 0)
+                            {
 
-                        boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
-                        spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), boardColor);
+                                boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
+                                spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), boardColor);
+                            }
+                        }
                     }
-                }
+                    spriteBatch.End();
+                    gbObj.UpdateBoard(loadedBoard, block, spriteBatch);
+
+
+                    //Drawing the shape to go onto the board
+                    spriteBatch.Begin();
+                    drawShape(boardShape);
+                    spriteBatch.End();
+
+
+                    //display the score
+                    spriteBatch.Begin();
+                    spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
+                    spriteBatch.End();
+
+                    //Next block square
+                    spriteBatch.Begin();
+                    spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.Black);
+                    spriteBatch.Draw(window, new Rectangle(700, 450, 200, 200), Color.White);
+                    drawShape(nextShape);
+                    spriteBatch.End();
+
+                    break;
             }
-            spriteBatch.End();
-
-            gbObj.UpdateBoard(loadedBoard, block, spriteBatch);
-
-
-            //Drawing the shape to go onto the board
-            spriteBatch.Begin();
-            drawShape(boardShape);
-            spriteBatch.End();
-
-
-            //display the score
-            spriteBatch.Begin();
-            spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
-            spriteBatch.End();
-
-            //Next block square
-            spriteBatch.Begin();
-            spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.Black);
-            spriteBatch.Draw(window, new Rectangle(700, 450, 200, 200), Color.White);
-            drawShape(nextShape);
-            spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }
