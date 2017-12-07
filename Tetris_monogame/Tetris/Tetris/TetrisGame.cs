@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using System; 
 namespace Tetris
@@ -21,8 +22,9 @@ namespace Tetris
         private Texture2D block, window; //game board
         private Texture2D options, background, playGame; //game menu
         Button optionButton, playGameButton;
+        Song themeSong;
 
-        MouseState currentMouseState, lastMouseState;
+        MouseState newMouseState, lastMouseState;
         const byte menuScreen = 0, game = 1, optionScreen = 2;
         int currentScreen = menuScreen;
 
@@ -88,7 +90,7 @@ namespace Tetris
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            this.IsMouseVisible = true;
           
             base.Initialize();
         }
@@ -102,7 +104,7 @@ namespace Tetris
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            //Game board textures
             block = Content.Load<Texture2D>("block");
             font = Content.Load<SpriteFont>("Score");
             window = Content.Load<Texture2D>("Window");
@@ -112,11 +114,15 @@ namespace Tetris
             options = Content.Load<Texture2D>("options");
             background = Content.Load<Texture2D>("tetris_logo");
 
-            optionButton = new Button(new Rectangle(300, 200, options.Width, options.Height), true);
+            optionButton = new Button(new Rectangle(400, 100, options.Width, options.Height), true);
             optionButton.load(Content, "options");
 
             playGameButton = new Button(new Rectangle(300, 100, playGame.Width, playGame.Height), true);
             playGameButton.load(Content, "PlayGame");
+
+            //Music
+            themeSong = Content.Load<Song>("Tetris");
+            MediaPlayer.Play(themeSong);
         }
 
         private void Fall()
@@ -284,26 +290,30 @@ namespace Tetris
             //Fall();
             // TODO: Add your update logic here
 
-            currentMouseState = Mouse.GetState();
-
+                newMouseState = Mouse.GetState();
             switch (currentScreen)
-            {
+            { 
                 case menuScreen:
-                if (playGameButton.update(new Vector2(currentMouseState.X, currentMouseState.Y)) == true && currentMouseState != lastMouseState && currentMouseState.LeftButton == ButtonState.Pressed
+
+                if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Released
                             || currentKeyState.IsKeyDown(Keys.Enter))
                 {//play the game
                         currentScreen = game;
                 }
-                if (playGameButton.update(new Vector2(currentMouseState.X, currentMouseState.Y)) == true && currentMouseState != lastMouseState && currentMouseState.LeftButton == ButtonState.Pressed)
+                if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Pressed)
                 {//goto options screen
                         currentScreen = optionScreen;
                 }
                 break;
 
                 case game:
+                    if (currentKeyState != oldKeyState && currentKeyState.IsKeyDown(Keys.Escape))
+                    {
+                        currentScreen = menuScreen;
+                    } 
                     break;
             }
-                    
+            lastMouseState = newMouseState;    
             base.Update(gameTime);
         }
 
@@ -388,8 +398,9 @@ namespace Tetris
             {
                 case menuScreen:
                     spriteBatch.Begin();
-                    spriteBatch.Draw(background, new Rectangle(0, 0, background.Width, background.Height), Color.White);
+                    spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds ,Color.White);
                     spriteBatch.Draw(playGame, new Rectangle(300, 100, playGame.Width, playGame.Height), Color.White);
+                    spriteBatch.Draw(options, new Rectangle(400, 100, options.Width, options.Height), Color.White);
                     spriteBatch.End();
                     break;
                 case game:
