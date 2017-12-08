@@ -20,19 +20,24 @@ namespace Tetris
         List<int[,]> rotate = new List<int[,]>();
 
         private Texture2D block, window;
-        private Texture2D options, background, playGame; //game menu
 
+        //game menu
+        private Texture2D options, background, playGame; 
         Button optionButton, playGameButton;
         Song themeSong;
-
         MouseState newMouseState, lastMouseState;
         const byte menuScreen = 0, game = 1, optionScreen = 2;
         int currentScreen = menuScreen;
-
-
         private SpriteFont font;
         private KeyboardState oldKeyState;
         private KeyboardState currentKeyState;
+        //End of game menu
+
+        //game details
+        private int score = 0;
+        private int level = 1;
+        private int linesCleared = 0;
+        //end of game details
 
         const int pixelWidth = 32;
         const int pixelLength = 32;
@@ -79,9 +84,32 @@ namespace Tetris
                 for (int j = 0; j < 18; j++)
                 {
                     gameBoard[i, j] = 0; // Initialize each location to a zero
+                    loadedBoard[i, j] = 0;
                 }
             }
+            linesCleared = 0;
+            level = 1;
+            score = 0;
         }
+
+        public int Score
+        {
+            get { return score; }
+            set { score = value; }
+        }
+
+        public int Level
+        {
+            get { return level; }
+            set { level = value; }
+        }
+
+        public int LinesCleared
+        {
+            get { return linesCleared; }
+            set { linesCleared = value; }
+        }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -126,6 +154,45 @@ namespace Tetris
             themeSong = Content.Load<Song>("Tetris");
            // MediaPlayer.Play(themeSong);
 
+        }
+
+        /// <summary>
+        /// Based on lines cleared, change the level we are on. The higher the level we are on the faster the blocks will fall
+        /// </summary>
+        public void CalculateLevel()
+        {
+            if (linesCleared>=0 && linesCleared<20)
+            {
+                level = 1;
+            }
+            else if (linesCleared >= 20 && linesCleared < 40)
+            {
+                level = 2;
+            }
+            else if (linesCleared >= 40 && linesCleared <= 60)
+            {
+                level = 3;
+            }
+            else if (linesCleared >= 60 && linesCleared < 80)
+            {
+                level = 5;
+            }
+            else if (linesCleared >= 80 && linesCleared < 100)
+            {
+                level = 6;
+            }
+            else if (linesCleared >= 100 && linesCleared < 120)
+            {
+                level = 7;
+            }
+            else if (linesCleared >= 120 && linesCleared < 140)
+            {
+                level = 8;
+            }
+            else
+            {
+                level = 9;
+            }
         }
 
         private void Fall()
@@ -426,9 +493,11 @@ namespace Tetris
                             gameArray[x, otherY] = gameArray[x, otherY - 1];
                         }
                     }
+                    linesCleared++;
                     y++;
                 }
             }
+            CalculateLevel();
         }
 
         /// <summary>
@@ -446,6 +515,7 @@ namespace Tetris
                     spriteBatch.Draw(options, new Rectangle(600, 100, options.Width, options.Height), Color.White);
                     spriteBatch.End();
                     break;
+
                 case game:
                     GraphicsDevice.Clear(Color.Gray);
                     List<int[,]> GameBoardList = gbObj.GetGameBoard();
@@ -477,9 +547,11 @@ namespace Tetris
                     spriteBatch.End();
 
 
-                    //display the score
+                    //display the score, level, and lines cleared
                     spriteBatch.Begin();
-                    spriteBatch.DrawString(font, "Score: ", new Vector2(700, 200), Color.Black);
+                    spriteBatch.DrawString(font, "Score: "+ score, new Vector2(700, 200), Color.Black);
+                    spriteBatch.DrawString(font, "Level: " + level, new Vector2(700, 300), Color.Black);
+                    spriteBatch.DrawString(font, "Lines Cleared: " + linesCleared, new Vector2(50,200), Color.Black);
                     spriteBatch.End();
 
                     //Next block square
