@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework; 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,11 @@ namespace Tetris
         const int BoardHeight = 200;
         const int boundsX = BoardWidth+pixelWidth*9;
         const int boundsY = BoardHeight + pixelWidth * 17;
-        Shapes shapeObj = new Shapes(); 
+        Shapes shapeObj = new Shapes();
+        private KeyboardState oldstate;
+        private KeyboardState newstate;
+
+
         public GameBoard()
         {
             int[,] TetrisBoard = new int[10, 18];
@@ -68,10 +73,21 @@ namespace Tetris
                                     if (posX == x && posY == y)
                                     {
                                         int row = k + 1; //row below
-                                        int col = j + 1; //looks ahead col right
-                                       if(gameboard[j,row] != 0)
+                                        int colRgt = j + 1; //looks ahead col right
+                                        int colLft = j - 1;
+                                       if (gameboard[j,row] != 0 && !(oldstate.IsKeyDown(Keys.Left) && newstate.IsKeyUp(Keys.Left)))
                                         {
                                             return BlockStates.Blocked;
+                                        }
+                                       if(oldstate.IsKeyDown(Keys.Right) && newstate.IsKeyUp(Keys.Right))
+                                        {
+                                            if(gameboard[colRgt, k] != 0)
+                                                 return BlockStates.Blocked;
+                                        }
+                                       if(oldstate.IsKeyDown(Keys.Left) && newstate.IsKeyUp(Keys.Left))
+                                        {
+                                            if(gameboard[colLft, k] != 0)
+                                                 return BlockStates.Blocked;
                                         }
 
                                     }
@@ -149,8 +165,6 @@ namespace Tetris
                 {
                     if(gameboard[i,k] != 0)
                     {
-                        Console.WriteLine("gameboard: {0}", gameboard[i, k]);
-
                         spriteBatch.Begin();
                         spriteBatch.Draw(block, new Vector2(BoardWidth + i * pixelWidth, BoardHeight + k * pixelLength), colors[gameboard[i,k]-1]); 
                         spriteBatch.End();

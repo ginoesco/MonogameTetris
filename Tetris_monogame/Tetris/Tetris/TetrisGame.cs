@@ -192,7 +192,6 @@ namespace Tetris
                 // moveLeftState = blockstate;
                 if (moveLeftState >= 362)
                 {
-                    Console.WriteLine("moveLeft: {0}", moveLeftState);
                     posX -= pixelWidth;
                 }
 
@@ -206,7 +205,6 @@ namespace Tetris
 
                 if (moveRightState <= boundsX)
                 {
-                    Console.WriteLine("moveRight: {0}", moveRightState);
 
                     posX += pixelWidth;
                 }
