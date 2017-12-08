@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Onger Donger/Desktop/Tetris/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/TetrisBlock.png</SourceFile>
-  <SourceTime>2017-12-07T00:39:06.2241979-08:00</SourceTime>
-  <DestFile>C:/Users/Onger Donger/Desktop/Tetris/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/bin/Windows/TetrisBlock.xnb</DestFile>
-  <DestTime>2017-12-07T00:58:57.0865035-08:00</DestTime>
+  <SourceFile>C:/Users/Admin/Desktop/Tetris/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/TetrisBlock.png</SourceFile>
+  <SourceTime>2017-12-05T16:11:29.4958249-08:00</SourceTime>
+  <DestFile>C:/Users/Admin/Desktop/Tetris/MonogameTetris/Tetris_monogame/Tetris/Tetris/Content/bin/Windows/TetrisBlock.xnb</DestFile>
+  <DestTime>2017-12-07T15:53:38.7986507-08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T07:05:36-08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

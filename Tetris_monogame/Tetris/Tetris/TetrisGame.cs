@@ -56,7 +56,7 @@ namespace Tetris
         int rotateIndex = 0;
         int rnum = 0;
         int count = 0; //used in timer
-        int currentShape = 1;
+        int currentShape = 6;
         int nextShape;
         int moveLeftState = 0;
         int moveRightState = 0;
@@ -92,7 +92,7 @@ namespace Tetris
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            this.IsMouseVisible = true;
+            IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -119,12 +119,12 @@ namespace Tetris
             optionButton = new Button(new Rectangle(400, 100, options.Width, options.Height), true);
             optionButton.load(Content, "options");
 
-            playGameButton = new Button(new Rectangle(300, 100, 100, 200), true);
+            playGameButton = new Button(new Rectangle(200, 75, playGame.Width+100, playGame.Height), true);
             playGameButton.load(Content, "PlayGame");
 
             //Music
             themeSong = Content.Load<Song>("Tetris");
-            MediaPlayer.Play(themeSong);
+           // MediaPlayer.Play(themeSong);
 
         }
 
@@ -270,6 +270,7 @@ namespace Tetris
 
         protected override void Update(GameTime gameTime)
         {
+            DeleteLines(loadedBoard);
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
 
@@ -295,6 +296,7 @@ namespace Tetris
             //Console.WriteLine("posX, posY: {0}, {1}", posX, posY);
             if (blockstate == blocked)
             {
+                //DeleteLines(loadedBoard);
                 for (int i = 0; i < 4; i++)
                 {
                     Array.Copy(gbObj.LoadBoard(loadedBoard, shape, xcoords[i], ycoords[i]), loadedBoard, loadedBoard.Length);
@@ -303,7 +305,6 @@ namespace Tetris
                 blockstate = -1;
                 SpawnShape();
             }
-            Fall();
             // TODO: Add your update logic here
 
             newMouseState = Mouse.GetState();
@@ -312,12 +313,12 @@ namespace Tetris
             {
                 case menuScreen:
 
-                    if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Released
-                                || currentKeyState.IsKeyDown(Keys.Enter))
+                    if ((playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && (newMouseState != lastMouseState) && newMouseState.LeftButton == ButtonState.Pressed)
+                                || (!oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyDown(Keys.Enter)))
                     {//play the game
                         currentScreen = game;
                     }
-                    if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Pressed)
+                    if (optionButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Pressed)
                     {//goto options screen
                         currentScreen = optionScreen;
                     }
@@ -328,10 +329,11 @@ namespace Tetris
                     {
                         currentScreen = menuScreen;
                     }
+                    Fall();
                     break;
             }
             lastMouseState = newMouseState;
-
+            DeleteLines(loadedBoard);
             base.Update(gameTime);
         }
 
@@ -403,6 +405,32 @@ namespace Tetris
 
         }
 
+        public void DeleteLines(int[,] gameArray)
+        {
+            for (int y =17; y>=0; y--) //Traversing the row
+            {
+                bool clear = true;
+                for (int x =0; x<10; x++) //Traversing the columns
+                {
+                    if (gameArray[x,y] == 0)
+                    {
+                        clear = false;
+                    }
+                }
+                if (clear)
+                {
+                    for (int otherY = y; otherY >= 1; otherY--)
+                    {
+                        for (int x = 0; x < 10; x++)
+                        {
+                            gameArray[x, otherY] = gameArray[x, otherY - 1];
+                        }
+                    }
+                    y++;
+                }
+            }
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -414,8 +442,8 @@ namespace Tetris
                 case menuScreen:
                     spriteBatch.Begin();
                     spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
-                    spriteBatch.Draw(playGame, new Rectangle(300, 100, playGame.Width, playGame.Height), Color.White);
-                    spriteBatch.Draw(options, new Rectangle(400, 100, options.Width, options.Height), Color.White);
+                    spriteBatch.Draw(playGame, new Rectangle(200, 100, playGame.Width+100, playGame.Height), Color.White);
+                    spriteBatch.Draw(options, new Rectangle(600, 100, options.Width, options.Height), Color.White);
                     spriteBatch.End();
                     break;
                 case game:
