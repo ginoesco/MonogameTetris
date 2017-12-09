@@ -19,19 +19,21 @@ namespace Tetris
         Vector2 tetrisBlock;
         List<int[,]> rotate = new List<int[,]>();
 
-        private Texture2D block, window;
+        //in game
+        private Texture2D block, window, space;
+        //end of ingame
 
         //game menu
-        private Texture2D options, background, playGame; 
+        private Texture2D options, background, playGame;
         Button optionButton, playGameButton;
         Song themeSong;
         MouseState newMouseState, lastMouseState;
         const byte menuScreen = 0, game = 1, optionScreen = 2;
         int currentScreen = menuScreen;
+        //end of game menu
         private SpriteFont font;
         private KeyboardState oldKeyState;
         private KeyboardState currentKeyState;
-        //End of game menu
 
         //game details
         private int score = 0;
@@ -92,18 +94,27 @@ namespace Tetris
             score = 0;
         }
 
+        /// <summary>
+        /// Property for the integer score
+        /// </summary>
         public int Score
         {
             get { return score; }
             set { score = value; }
         }
 
+        /// <summary>
+        /// Property for integer level
+        /// </summary>
         public int Level
         {
             get { return level; }
             set { level = value; }
         }
 
+        /// <summary>
+        /// Property for integer linesCleared
+        /// </summary>
         public int LinesCleared
         {
             get { return linesCleared; }
@@ -134,10 +145,11 @@ namespace Tetris
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // in game content
             block = Content.Load<Texture2D>("block");
             font = Content.Load<SpriteFont>("Score");
             window = Content.Load<Texture2D>("Window");
+            space = Content.Load<Texture2D>("maxresdefault");
 
             //game menu
             playGame = Content.Load<Texture2D>("PlayGame");
@@ -147,13 +159,14 @@ namespace Tetris
             optionButton = new Button(new Rectangle(400, 100, options.Width, options.Height), true);
             optionButton.load(Content, "options");
 
-            playGameButton = new Button(new Rectangle(200, 75, playGame.Width+100, playGame.Height), true);
+            playGameButton = new Button(new Rectangle(200, 75, playGame.Width + 100, playGame.Height), true);
             playGameButton.load(Content, "PlayGame");
 
             //Music
             themeSong = Content.Load<Song>("Tetris");
-           // MediaPlayer.Play(themeSong);
-
+            MediaPlayer.Volume = 0.1f;
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(themeSong);
         }
 
         /// <summary>
@@ -161,31 +174,35 @@ namespace Tetris
         /// </summary>
         public void CalculateLevel()
         {
-            if (linesCleared>=0 && linesCleared<20)
+            if ((linesCleared >= 0 && linesCleared < 20) || level == 1)
             {
                 level = 1;
             }
-            else if (linesCleared >= 20 && linesCleared < 40)
+            else if ((linesCleared >= 20 && linesCleared < 40) || level == 2)
             {
                 level = 2;
             }
-            else if (linesCleared >= 40 && linesCleared <= 60)
+            else if ((linesCleared >= 40 && linesCleared <= 60) || level == 3)
             {
                 level = 3;
             }
-            else if (linesCleared >= 60 && linesCleared < 80)
+            else if ((linesCleared >= 60 && linesCleared < 80) || level == 4)
+            {
+                level = 4;
+            }
+            else if ((linesCleared >= 80 && linesCleared < 100) || level == 5)
             {
                 level = 5;
             }
-            else if (linesCleared >= 80 && linesCleared < 100)
+            else if ((linesCleared >= 100 && linesCleared < 120) || level == 6)
             {
                 level = 6;
             }
-            else if (linesCleared >= 100 && linesCleared < 120)
+            else if ((linesCleared >= 120 && linesCleared < 140) || level == 7)
             {
                 level = 7;
             }
-            else if (linesCleared >= 120 && linesCleared < 140)
+            else if ((linesCleared >= 140 && linesCleared < 160) || level == 8)
             {
                 level = 8;
             }
@@ -195,9 +212,62 @@ namespace Tetris
             }
         }
 
-        private void Fall()
+        /// <summary>
+        /// Used to detect when the game is over
+        /// </summary>
+        /// <param name="gameArray"></param>
+        /// <returns></returns>
+        private bool GameOver(int[,] gameArray)
         {
-            int timer = 60;
+            int column = 0;
+            for (int row = 0; row < 9; row++)
+            {
+                if (gameArray[row,column] != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Depending on which level we are on, adjust the fall speed
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        private int calculateTimer(int level)
+        {
+            int timer=0;
+            switch (level)
+            {
+                case 1: timer = 100;
+                        break;
+                case 2: timer = 90;
+                        break;
+                case 3: timer = 80;
+                        break;
+                case 4: timer = 70;
+                        break;
+                case 5: timer = 60;
+                        break;
+                case 6: timer = 50;
+                        break;
+                case 7: timer = 40;
+                        break;
+                case 8: timer = 30;
+                        break;
+                case 9: timer = 20;
+                        break;
+            }
+            return timer; 
+        }
+
+        /// <summary>
+        /// To make the blocks fall down at a certain speed defined by the parameter
+        /// </summary>
+        /// <param name="timer"></param>
+        private void Fall(int timer)
+        {
             if (posY < boundsY)
             {
                 if (count == timer)
@@ -209,6 +279,10 @@ namespace Tetris
             }
         }
 
+        /// <summary>
+        /// Used to rotate our shapes
+        /// </summary>
+        /// <param name="currentShape"></param>
         private void Rotate(int currentShape)
         {
             switch (currentShape)
@@ -239,6 +313,9 @@ namespace Tetris
             }
         }
 
+        /// <summary>
+        /// Using a random number generator, this is used to randomly select the next shape
+        /// </summary>
         public void SpawnShape()
         {
             posX = 330 + pixelWidth * 4;
@@ -248,6 +325,10 @@ namespace Tetris
             currentShape = nextShape;
             nextShape = rnum;
         }
+
+        /// <summary>
+        /// Moving the blocks down, left, or right.
+        /// </summary>
         public void MoveKeys()
         {
             int blockstate = (int)gbObj.CheckPlacement(loadedBoard, shape, posX, posY);
@@ -396,7 +477,11 @@ namespace Tetris
                     {
                         currentScreen = menuScreen;
                     }
-                    Fall();
+                    if (GameOver(loadedBoard))
+                    {
+                        currentScreen = menuScreen;
+                    }
+                    Fall(calculateTimer(level));
                     break;
             }
             lastMouseState = newMouseState;
@@ -525,6 +610,7 @@ namespace Tetris
                     gameBoard = GameBoardList[0];
                     //Game board
                     spriteBatch.Begin();
+                    spriteBatch.Draw(space, GraphicsDevice.Viewport.Bounds, Color.White);
                     for (int i = 0; i < 10; i++)
                     {
                         for (int j = 0; j < 18; j++)
@@ -533,7 +619,7 @@ namespace Tetris
                             {
 
                                 boardColor = Color.FromNonPremultiplied(50, 50, 50, 50);
-                                spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), boardColor);
+                                spriteBatch.Draw(block, new Rectangle(boardX + i * size, boardY + j * size, size, size), new Rectangle(0, 0, 32, 32), Color.DarkGray);
                             }
                         }
                     }
@@ -549,15 +635,15 @@ namespace Tetris
 
                     //display the score, level, and lines cleared
                     spriteBatch.Begin();
-                    spriteBatch.DrawString(font, "Score: "+ score, new Vector2(700, 200), Color.Black);
-                    spriteBatch.DrawString(font, "Level: " + level, new Vector2(700, 300), Color.Black);
-                    spriteBatch.DrawString(font, "Lines Cleared: " + linesCleared, new Vector2(50,200), Color.Black);
+                    spriteBatch.DrawString(font, "Score: "+ score, new Vector2(700, 200), Color.White);
+                    spriteBatch.DrawString(font, "Level: " + level, new Vector2(700, 300), Color.White);
+                    spriteBatch.DrawString(font, "Lines Cleared: " + linesCleared, new Vector2(50,200), Color.White);
                     spriteBatch.End();
 
                     //Next block square
                     spriteBatch.Begin();
-                    spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.Black);
-                    spriteBatch.Draw(window, new Rectangle(700, 450, 200, 200), Color.White);
+                    spriteBatch.DrawString(font, "Next Block", new Vector2(700, 400), Color.White);
+                    spriteBatch.Draw(window, new Rectangle(700, 450, 200, 200), Color.Gray);
                     drawShape(nextShape);
                     spriteBatch.End();
 
