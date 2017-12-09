@@ -38,7 +38,7 @@ namespace Tetris
         //game details
         private int score = 0;
         private int level = 1;
-        private int linesCleared = 0;
+        private int linesCleared = 19;
         //end of game details
 
         const int pixelWidth = 32;
@@ -89,36 +89,9 @@ namespace Tetris
                     loadedBoard[i, j] = 0;
                 }
             }
-            linesCleared = 0;
-            level = 1;
-            score = 0;
-        }
-
-        /// <summary>
-        /// Property for the integer score
-        /// </summary>
-        public int Score
-        {
-            get { return score; }
-            set { score = value; }
-        }
-
-        /// <summary>
-        /// Property for integer level
-        /// </summary>
-        public int Level
-        {
-            get { return level; }
-            set { level = value; }
-        }
-
-        /// <summary>
-        /// Property for integer linesCleared
-        /// </summary>
-        public int LinesCleared
-        {
-            get { return linesCleared; }
-            set { linesCleared = value; }
+            //linesCleared = 0;
+           //level = 1;
+           //score = 0;
         }
 
 
@@ -166,7 +139,7 @@ namespace Tetris
             themeSong = Content.Load<Song>("Tetris");
             MediaPlayer.Volume = 0.1f;
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(themeSong);
+            //MediaPlayer.Play(themeSong);
         }
 
         /// <summary>
@@ -174,35 +147,35 @@ namespace Tetris
         /// </summary>
         public void CalculateLevel()
         {
-            if ((linesCleared >= 0 && linesCleared < 20) || level == 1)
+            if ((linesCleared >= 0 && linesCleared < 20))
             {
                 level = 1;
             }
-            else if ((linesCleared >= 20 && linesCleared < 40) || level == 2)
+            else if ((linesCleared >= 20 && linesCleared < 40))
             {
                 level = 2;
             }
-            else if ((linesCleared >= 40 && linesCleared <= 60) || level == 3)
+            else if ((linesCleared >= 40 && linesCleared <= 60))
             {
                 level = 3;
             }
-            else if ((linesCleared >= 60 && linesCleared < 80) || level == 4)
+            else if ((linesCleared >= 60 && linesCleared < 80))
             {
                 level = 4;
             }
-            else if ((linesCleared >= 80 && linesCleared < 100) || level == 5)
+            else if ((linesCleared >= 80 && linesCleared < 100))
             {
                 level = 5;
             }
-            else if ((linesCleared >= 100 && linesCleared < 120) || level == 6)
+            else if ((linesCleared >= 100 && linesCleared < 120))
             {
                 level = 6;
             }
-            else if ((linesCleared >= 120 && linesCleared < 140) || level == 7)
+            else if ((linesCleared >= 120 && linesCleared < 140))
             {
                 level = 7;
             }
-            else if ((linesCleared >= 140 && linesCleared < 160) || level == 8)
+            else if ((linesCleared >= 140 && linesCleared < 160))
             {
                 level = 8;
             }
@@ -419,6 +392,7 @@ namespace Tetris
         protected override void Update(GameTime gameTime)
         {
             DeleteLines(loadedBoard);
+
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
 
