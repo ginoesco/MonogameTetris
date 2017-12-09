@@ -219,7 +219,7 @@ namespace Tetris
         /// <returns></returns>
         private bool GameOver(int[,] gameArray)
         {
-            int column = 0;
+            int column = 1;
             for (int row = 0; row < 9; row++)
             {
                 if (gameArray[row,column] != 0)
@@ -422,6 +422,8 @@ namespace Tetris
             oldKeyState = currentKeyState;
             currentKeyState = Keyboard.GetState();
 
+            lastMouseState = newMouseState;
+            newMouseState = Mouse.GetState();
             int blocked = (int)GameBoard.BlockStates.Blocked;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -455,15 +457,15 @@ namespace Tetris
             }
             // TODO: Add your update logic here
 
-            newMouseState = Mouse.GetState();
             //Testing menu
             switch (currentScreen)
             {
                 case menuScreen:
 
-                    if ((playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && (newMouseState != lastMouseState) && newMouseState.LeftButton == ButtonState.Pressed)
-                                || (!oldKeyState.IsKeyDown(Keys.Enter) && currentKeyState.IsKeyDown(Keys.Enter)))
+                    if ((playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && (newMouseState != lastMouseState) && (newMouseState.LeftButton == ButtonState.Pressed))
+                                || ((currentKeyState != oldKeyState) && currentKeyState.IsKeyDown(Keys.Enter)))
                     {//play the game
+                        NewGame();
                         currentScreen = game;
                     }
                     if (optionButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true && newMouseState != lastMouseState && newMouseState.LeftButton == ButtonState.Pressed)
@@ -484,7 +486,6 @@ namespace Tetris
                     Fall(calculateTimer(level));
                     break;
             }
-            lastMouseState = newMouseState;
             DeleteLines(loadedBoard);
             base.Update(gameTime);
         }
@@ -596,7 +597,11 @@ namespace Tetris
                 case menuScreen:
                     spriteBatch.Begin();
                     spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
-                    spriteBatch.Draw(playGame, new Rectangle(200, 100, playGame.Width+100, playGame.Height), Color.White);
+                    if (playGameButton.update(new Vector2(newMouseState.X, newMouseState.Y)) == true) 
+                    {//If mouse is in playbutton range, draw white box around it
+                        spriteBatch.Draw(window, new Rectangle(199, 99, 302, 52), Color.White);
+                    }
+                    spriteBatch.Draw(playGame, new Rectangle(200, 100, 300, 50), Color.White);
                     spriteBatch.Draw(options, new Rectangle(600, 100, options.Width, options.Height), Color.White);
                     spriteBatch.End();
                     break;
